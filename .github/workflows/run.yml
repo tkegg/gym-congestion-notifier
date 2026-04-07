@@ -1,0 +1,35 @@
+name: ジム混雑チェック
+
+on:
+  schedule:
+    # 8時〜17時：1時間に1回（UTC 23,0,1,2,3,4,5,6,7時）
+    - cron: '0 23,0,1,2,3,4,5,6,7 * * *'
+    # 17時〜23時：30分に1回（UTC 8〜14時）
+    - cron: '0,30 8-14 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-congestion:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Pythonをセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: Playwrightをインストール
+        run: playwright install chromium
+
+      - name: 混雑チェックを実行
+        env:
+          GYM_URL: ${{ secrets.GYM_URL }}
+          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: python main.py
