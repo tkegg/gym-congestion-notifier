@@ -14,7 +14,7 @@ def main():
     # 時間帯ごとの設定
     if 8 <= hour < 17:
         threshold = 3
-    elif 17 <= hour < 23:
+    elif 17 <= hour or hour < 1:
         threshold = 4
     else:
         print(f"現在{hour}時。通知時間帯外のため終了します")
